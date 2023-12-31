@@ -48,42 +48,48 @@ def readStocks(file):
 
 def make_visualization(curqr, stocks, prepositions, curpositions):
     """Make visualization of positions data"""
+    """
     my_style = LS('#333366', base_style=LCS)
     my_style.title_font_size = 24
     my_style.label_font_size = 14
     my_style.major_label_font_size = 18
-
+    """
     my_config = pygal.Config()
     my_config.x_label_rotation = 45
+    my_config.show_y_guides = False
+    """
     my_config.show_legend = False
     my_config.truncate_label = 15
-    my_config.show_y_guides = False
     my_config.width = 1000
+    """
+    chart = pygal.Bar(my_config)
 
-    chart = pygal.Bar(my_config, style=my_style)
-
+    # chart = pygal.Bar()
     pathname = os.path.split(curqr)[0]
     filename = os.path.split(curqr)[1]
-    print('filename:', filename)
+    # print('filename:', filename)
     filebasename = os.path.splitext(filename)[0]
-    print('filebasename:', filebasename)
-    chart.title = filebasename + '持仓数据'
+    # print('filebasename:', filebasename)
+    chart.title = filebasename + '持仓数据变动'
     chart.x_labels = stocks
-
-    chart.add('', prepositions)
-    chart.add('', curpositions)
+    chart.y_title = '数量(股)'
+    # print(stocks)
+    # print(curpositions)
+    chart.add('上季数据', prepositions)
+    chart.add('当季数据', curpositions)
 
     filebasename = filebasename + '.svg'
     renderfilename = pathname + '\\' + filebasename
-    print(renderfilename)
+    # print(renderfilename)
     chart.render_to_file(renderfilename)
-    print('生成文件:', renderfilename)
+    # print('生成文件:', renderfilename)
     webbrowser.open_new_tab(renderfilename)
 
 
 def analyseStock(curqr, preqr):
     try:
         curStockDict = readStocks(curqr)
+        # print(curStockDict)
         # print(result1)
         # stockSet1 = set(result1.keys())
         # print(stockSet1)
@@ -101,9 +107,9 @@ def analyseStock(curqr, preqr):
         if key not in curStockDict:
             print(f'{key} 退出前十重仓股')
             stocks.append([key])
-            preposition={
-                'value':preStockDict[key],
-                'label':'退出前十重仓股'
+            preposition = {
+                'value': preStockDict[key],
+                'label': '退出前十重仓股'
             }
             prepositions.append(preposition)
             curpositions.append(0)
@@ -128,7 +134,7 @@ def analyseStock(curqr, preqr):
             }
             curpositions.append(curposition)
             prepositions.append(preStockDict[key])
-    make_visualization(curqr, stocks, prepositions,curpositions)
+    make_visualization(curqr, stocks, prepositions, curpositions)
 
 
 def dealDirectory(path):
